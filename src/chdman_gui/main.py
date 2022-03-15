@@ -1,4 +1,6 @@
+import glob
 import sys
+from pathlib import Path
 from typing import List, Tuple
 
 from PySide6 import QtWidgets
@@ -40,15 +42,13 @@ class MainWindow(QtWidgets.QWidget):
         self.media_dropdown.currentIndexChanged.connect(self.update_job_opts_widget)
 
         self.add_files_button = QtWidgets.QPushButton("Add files")
+        self.add_files_button.clicked.connect(self.handle_add_files_button)
         self.add_directory_button = QtWidgets.QPushButton("Add a directory")
+        self.add_directory_button.clicked.connect(self.handle_add_dir_button)
 
         self.inputs_label = QtWidgets.QLabel("Input files")
         self.inputs_box = QtWidgets.QListWidget()
         self.inputs_box.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
-        self.inputs_box.addItem("D:\\Some\\File\\path\\1.cue")
-        self.inputs_box.addItem("D:\\Some\\File\\path\\2.cue")
-        self.inputs_box.addItem("D:\\Some\\File\\path\\3.cue")
-        self.inputs_box.addItem("D:\\Some\\File\\path\\4.cue")
 
         self.select_all_button = QtWidgets.QPushButton("Select all")
         self.remove_selected_button = QtWidgets.QPushButton("Remove")
@@ -63,6 +63,8 @@ class MainWindow(QtWidgets.QWidget):
         self.output_extension_dropdown.addItems(["ext1", "ext2", "ext3"])
 
         self.job_opts_label = QtWidgets.QLabel("Job options")
+
+        self.run_jobs_button = QtWidgets.QPushButton("Run jobs")
 
         self.layout = QtWidgets.QVBoxLayout(self)
 
@@ -118,10 +120,13 @@ class MainWindow(QtWidgets.QWidget):
         )
         self.layout.addWidget(self.seventh_row_widget)
 
-        # Eigth row
+        # 8th row
+        self.layout.addWidget(self.run_jobs_button)
+
+        # 9th row
         self.layout.addWidget(self.job_opts_label)
 
-        # Ninth row and beyond : job options
+        # 10th row and beyond: job options
         self.update_job_opts_widget()
 
     def update_job_opts_widget(self):
@@ -167,6 +172,28 @@ class MainWindow(QtWidgets.QWidget):
         self.job_opts_widget.setLayout(self.job_opts_layout)
 
         self.layout.addWidget(self.job_opts_widget)
+
+    def add_files_to_inputs_box(self, filepaths: List[str]):
+        existing_paths = set(
+            [
+                Path(self.inputs_box.item(i).text())
+                for i in range(self.inputs_box.count())
+            ]
+        )
+        self.inputs_box.addItems(map(str, set(map(Path, filepaths)) - existing_paths))
+
+    def handle_add_files_button(self):
+        filepaths = QtWidgets.QFileDialog.getOpenFileNames(
+            self, "Select files", "/", "*.cue;*.toc;*.gdi"
+        )[0]
+        self.add_files_to_inputs_box(filepaths)
+
+    def handle_add_dir_button(self):
+        selected_dir = QtWidgets.QFileDialog.getExistingDirectory(
+            self, "Select directory"
+        )
+        filepaths = glob.glob(selected_dir + "/**/*.cue", recursive=True)
+        self.add_files_to_inputs_box(filepaths)
 
 
 def main():
