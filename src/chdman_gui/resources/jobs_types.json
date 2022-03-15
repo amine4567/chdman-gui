@@ -1,7 +1,7 @@
 [
+  { "job_id": "create", "text": "Create CHD from media" },
   { "job_id": "info", "text": "Display information about a CHD" },
   { "job_id": "verify", "text": "Verify a CHD's integrity" },
-  { "job_id": "create", "text": "Create CHD from media" },
   { "job_id": "extract", "text": "Extract media from CHD" },
   {
     "job_id": "copy",

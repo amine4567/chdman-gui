@@ -30,13 +30,14 @@ class MainWindow(QtWidgets.QWidget):
 
         self.job_dropdown_label = QtWidgets.QLabel("Job type:")
         self.job_dropdown = QtWidgets.QComboBox()
-        jobs_types = load_resource("jobs_types")
-        self.job_dropdown.addItems([job["text"] for job in jobs_types])
+        self.jobs_types = load_resource("jobs_types")
+        self.job_dropdown.addItems([job["text"] for job in self.jobs_types])
 
         self.media_dropdown_label = QtWidgets.QLabel("Media type:")
         self.media_dropdown = QtWidgets.QComboBox()
-        media_types = load_resource("media_types")
-        self.media_dropdown.addItems([media["text"] for media in media_types])
+        self.media_types = load_resource("media_types")
+        self.media_dropdown.addItems([media["text"] for media in self.media_types])
+        self.media_dropdown.currentIndexChanged.connect(self.update_job_opts_widget)
 
         self.add_files_button = QtWidgets.QPushButton("Add files")
         self.add_directory_button = QtWidgets.QPushButton("Add a directory")
@@ -62,23 +63,6 @@ class MainWindow(QtWidgets.QWidget):
         self.output_extension_dropdown.addItems(["ext1", "ext2", "ext3"])
 
         self.job_opts_label = QtWidgets.QLabel("Job options")
-        job_type = "create"
-        media_type = "hd"
-        job_opts_dict = load_resource("jobs_opts/" + job_type)[media_type]
-        self.job_opts = list()
-        for elt in job_opts_dict:
-            left_widget = QtWidgets.QCheckBox(elt["desc"])
-            match elt.get("widget", None):
-                case "line_edit":
-                    right_widget = QtWidgets.QLineEdit()
-                case "dropdown":
-                    right_widget = QtWidgets.QComboBox()
-                case None:
-                    right_widget = QtWidgets.QLabel()
-                case _:
-                    raise ValueError(f"Unknown widget type : {elt['widget']}")
-
-            self.job_opts.append([(left_widget, 250), (right_widget, 120)])
 
         self.layout = QtWidgets.QVBoxLayout(self)
 
@@ -138,15 +122,51 @@ class MainWindow(QtWidgets.QWidget):
         self.layout.addWidget(self.job_opts_label)
 
         # Ninth row and beyond : job options
+        self.update_job_opts_widget()
+
+    def update_job_opts_widget(self):
+        selected_job = self.jobs_types[self.job_dropdown.currentIndex()]["job_id"]
+        selected_media = self.media_types[self.media_dropdown.currentIndex()][
+            "media_id"
+        ]
+
+        job_opts_dict = load_resource("jobs_opts/" + selected_job)[selected_media]
+        self.job_opts = list()
+        for elt in job_opts_dict:
+            left_widget = QtWidgets.QCheckBox(elt["desc"])
+            match elt.get("widget", None):
+                case "line_edit":
+                    right_widget = QtWidgets.QLineEdit()
+                case "dropdown":
+                    right_widget = QtWidgets.QComboBox()
+                case None:
+                    right_widget = QtWidgets.QLabel()
+                case _:
+                    raise ValueError(f"Unknown widget type : {elt['widget']}")
+
+            self.job_opts.append([(left_widget, 250), (right_widget, 120)])
+
+        # Update layout
+        if hasattr(self, "job_opts_widget"):
+            self.layout.removeWidget(self.job_opts_widget)
+            self.job_opts_widget.hide()
+
         rows = self.job_opts[:MAX_OPTS_PER_COL]
         if len(self.job_opts) > MAX_OPTS_PER_COL:
             for i, widgets in enumerate(self.job_opts[MAX_OPTS_PER_COL:]):
                 rows[i].extend(widgets)
 
+        self.job_opts_layout = QtWidgets.QVBoxLayout()
+        self.job_opts_widget = QtWidgets.QWidget()
+
         for row in rows:
             row_widget, row_layout = custom_horizontal_box(row)
             row_layout.setContentsMargins(0, 0, 0, 0)
-            self.layout.addWidget(row_widget)
+            self.job_opts_layout.addWidget(row_widget)
+
+        self.job_opts_widget.setLayout(self.job_opts_layout)
+
+        self.layout.addWidget(self.job_opts_widget)
 
 
 def main():
