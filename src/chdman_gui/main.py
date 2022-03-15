@@ -9,6 +9,7 @@ from PySide6 import QtWidgets
 from .utils import load_resource
 
 MAX_OPTS_PER_COL = 9
+CHDMAN_BIN_PATH = "D:\\Projets\\_my_repos\\chdman-gui\\src\\chdman_gui\\chdman"
 
 
 def custom_horizontal_box(
@@ -35,17 +36,30 @@ class MainWindow(QtWidgets.QWidget):
         self.job_dropdown = QtWidgets.QComboBox()
         self.jobs_types = load_resource("jobs_types")
         self.job_dropdown.addItems([job["text"] for job in self.jobs_types])
+        self.job_dropdown.currentIndexChanged.connect(self.update_job_opts_widget)
+        self.job_dropdown.currentIndexChanged.connect(
+            self.update_accepted_inputs_filetypes
+        )
 
         self.media_dropdown_label = QtWidgets.QLabel("Media type:")
         self.media_dropdown = QtWidgets.QComboBox()
         self.media_types = load_resource("media_types")
         self.media_dropdown.addItems([media["text"] for media in self.media_types])
         self.media_dropdown.currentIndexChanged.connect(self.update_job_opts_widget)
+        self.media_dropdown.currentIndexChanged.connect(
+            self.update_accepted_inputs_filetypes
+        )
 
         self.add_files_button = QtWidgets.QPushButton("Add files")
         self.add_files_button.clicked.connect(self.handle_add_files_button)
         self.add_directory_button = QtWidgets.QPushButton("Add a directory")
         self.add_directory_button.clicked.connect(self.handle_add_dir_button)
+
+        self.accepted_inputs_filetypes_label = QtWidgets.QLabel(
+            "Accepted inputs filetypes:"
+        )
+        self.accepted_inputs_filetypes = QtWidgets.QLabel()
+        self.update_accepted_inputs_filetypes()
 
         self.inputs_label = QtWidgets.QLabel("Input files")
         self.inputs_box = QtWidgets.QListWidget()
@@ -89,7 +103,12 @@ class MainWindow(QtWidgets.QWidget):
 
         # Third row
         self.third_row_widget, self.third_row_layout = custom_horizontal_box(
-            [(self.add_files_button, 80), (self.add_directory_button, 100)]
+            [
+                (self.add_files_button, 80),
+                (self.add_directory_button, 100),
+                (self.accepted_inputs_filetypes_label, 135),
+                (self.accepted_inputs_filetypes, 80),
+            ]
         )
         self.third_row_layout.setContentsMargins(0, 0, 0, 0)
         self.layout.addWidget(self.third_row_widget)
@@ -139,6 +158,22 @@ class MainWindow(QtWidgets.QWidget):
     def get_current_media(self) -> str:
         current_media = self.media_types[self.media_dropdown.currentIndex()]["media_id"]
         return current_media
+
+    def get_accepted_inputs_filetypes(self) -> List[str]:
+        current_job = self.get_current_job()
+        if current_job == "create":
+            filetypes = self.media_types[self.media_dropdown.currentIndex()][
+                "file_types"
+            ]
+        else:
+            filetypes = ["chd"]
+
+        return filetypes
+
+    def update_accepted_inputs_filetypes(self):
+        self.accepted_inputs_filetypes.setText(
+            "<b>" + ", ".join(self.get_accepted_inputs_filetypes()) + "</b>"
+        )
 
     def update_job_opts_widget(self):
         selected_job = self.get_current_job()
@@ -193,7 +228,10 @@ class MainWindow(QtWidgets.QWidget):
 
     def handle_add_files_button(self):
         filepaths = QtWidgets.QFileDialog.getOpenFileNames(
-            self, "Select files", "/", "*.cue;*.toc;*.gdi"
+            self,
+            "Select files",
+            "/",
+            ";".join([f"*.{ext}" for ext in self.get_accepted_inputs_filetypes()]),
         )[0]
         self.add_files_to_inputs_box(filepaths)
 
@@ -224,7 +262,7 @@ class MainWindow(QtWidgets.QWidget):
             output_path = Path(self.output_dirpath.text()) / (input_path.stem + ".chd")
             full_cmd = " ".join(
                 [
-                    "D:\\Projets\\_my_repos\\chdman-gui\\src\\chdman_gui\\chdman",
+                    CHDMAN_BIN_PATH,
                     cmd_type,
                     "--input",
                     f'"{input_path}"',

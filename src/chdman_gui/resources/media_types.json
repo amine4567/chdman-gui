@@ -1,6 +1,6 @@
 [
-  { "media_id": "cd", "text": "CD image" },
-  { "media_id": "hd", "text": "Hard Disk image" },
-  { "media_id": "ld", "text": "LaserDisc image" },
-  { "media_id": "raw", "text": "Raw image" }
+  { "media_id": "cd", "text": "CD image", "file_types": ["cue", "toc", "gdi"] },
+  { "media_id": "hd", "text": "Hard Disk image", "file_types": ["img"] },
+  { "media_id": "ld", "text": "LaserDisc image", "file_types": ["raw"] },
+  { "media_id": "raw", "text": "Raw image", "file_types": ["img", "raw"] }
 ]
