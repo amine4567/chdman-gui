@@ -1,5 +1,7 @@
 from invoke import task
 
+from src.chdman_gui.main import main
+
 
 # Python reqs
 @task
@@ -16,4 +18,4 @@ def update_combined_reqs(c):
 
 @task
 def run(c):
-    c.run("python src/chdman_gui/main.py")
+    main()

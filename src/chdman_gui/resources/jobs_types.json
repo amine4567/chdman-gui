@@ -1,0 +1,13 @@
+[
+  { "job_id": "info", "text": "Display information about a CHD" },
+  { "job_id": "verify", "text": "Verify a CHD's integrity" },
+  { "job_id": "create", "text": "Create CHD from media" },
+  { "job_id": "extract", "text": "Extract media from CHD" },
+  {
+    "job_id": "copy",
+    "text": "Copy data from a CHD to another"
+  },
+  { "job_id": "addmeta", "text": "Add metadata to CHD" },
+  { "job_id": "delmeta", "text": "remove metadata from CHD" },
+  { "job_id": "dumpmeta", "text": "Dump metadata from CHD" }
+]

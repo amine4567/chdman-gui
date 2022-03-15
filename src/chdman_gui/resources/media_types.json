@@ -1,0 +1,6 @@
+[
+  { "media_id": "cd", "text": "CD image" },
+  { "media_id": "hd", "text": "Hard Disk image" },
+  { "media_id": "ld", "text": "LaserDisc image" },
+  { "media_id": "raw", "text": "Raw image" }
+]

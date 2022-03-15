@@ -3,26 +3,9 @@ from typing import List, Tuple
 
 from PySide6 import QtWidgets
 
-jobs_types = [
-    {"job_id": "info", "text": "Display information about a CHD"},
-    {"job_id": "verify", "text": "Verify a CHD's integrity"},
-    {"job_id": "create", "text": "Create CHD from media"},
-    {"job_id": "extract", "text": "Extract media from CHD"},
-    {
-        "job_id": "copy",
-        "text": "Copy data from a CHD to another",
-    },
-    {"job_id": "addmeta", "text": "Add metadata to CHD"},
-    {"job_id": "delmeta", "text": "remove metadata from CHD"},
-    {"job_id": "dumpmeta", "text": "Dump metadata from CHD"},
-]
+from .utils import load_resource
 
-media_types = [
-    {"media_id": "cd", "text": "CD image"},
-    {"media_id": "hd", "text": "Hard Disk image"},
-    {"media_id": "ld", "text": "LaserDisc image"},
-    {"media_id": "raw", "text": "Raw image"},
-]
+MAX_OPTS_PER_COL = 9
 
 
 def custom_horizontal_box(
@@ -47,10 +30,12 @@ class MainWindow(QtWidgets.QWidget):
 
         self.job_dropdown_label = QtWidgets.QLabel("Job type:")
         self.job_dropdown = QtWidgets.QComboBox()
+        jobs_types = load_resource("jobs_types")
         self.job_dropdown.addItems([job["text"] for job in jobs_types])
 
         self.media_dropdown_label = QtWidgets.QLabel("Media type:")
         self.media_dropdown = QtWidgets.QComboBox()
+        media_types = load_resource("media_types")
         self.media_dropdown.addItems([media["text"] for media in media_types])
 
         self.add_files_button = QtWidgets.QPushButton("Add files")
@@ -75,6 +60,25 @@ class MainWindow(QtWidgets.QWidget):
         self.output_extension_dropdown_label = QtWidgets.QLabel("Output file type:")
         self.output_extension_dropdown = QtWidgets.QComboBox()
         self.output_extension_dropdown.addItems(["ext1", "ext2", "ext3"])
+
+        self.job_opts_label = QtWidgets.QLabel("Job options")
+        job_type = "create"
+        media_type = "hd"
+        job_opts_dict = load_resource("jobs_opts/" + job_type)[media_type]
+        self.job_opts = list()
+        for elt in job_opts_dict:
+            left_widget = QtWidgets.QCheckBox(elt["desc"])
+            match elt.get("widget", None):
+                case "line_edit":
+                    right_widget = QtWidgets.QLineEdit()
+                case "dropdown":
+                    right_widget = QtWidgets.QComboBox()
+                case None:
+                    right_widget = QtWidgets.QLabel()
+                case _:
+                    raise ValueError(f"Unknown widget type : {elt['widget']}")
+
+            self.job_opts.append([(left_widget, 250), (right_widget, 120)])
 
         self.layout = QtWidgets.QVBoxLayout(self)
 
@@ -130,8 +134,22 @@ class MainWindow(QtWidgets.QWidget):
         )
         self.layout.addWidget(self.seventh_row_widget)
 
+        # Eigth row
+        self.layout.addWidget(self.job_opts_label)
 
-if __name__ == "__main__":
+        # Ninth row and beyond : job options
+        rows = self.job_opts[:MAX_OPTS_PER_COL]
+        if len(self.job_opts) > MAX_OPTS_PER_COL:
+            for i, widgets in enumerate(self.job_opts[MAX_OPTS_PER_COL:]):
+                rows[i].extend(widgets)
+
+        for row in rows:
+            row_widget, row_layout = custom_horizontal_box(row)
+            row_layout.setContentsMargins(0, 0, 0, 0)
+            self.layout.addWidget(row_widget)
+
+
+def main():
     app = QtWidgets.QApplication([])
 
     widget = MainWindow()

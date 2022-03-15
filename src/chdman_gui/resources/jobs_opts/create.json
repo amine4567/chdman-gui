@@ -1,0 +1,144 @@
+{
+  "cd": [
+    {
+      "opt_id": "force",
+      "desc": "force overwriting an existing file"
+    },
+    {
+      "opt_id": "hunksize",
+      "desc": "size of each hunk, in bytes"
+    },
+    {
+      "opt_id": "compression",
+      "desc": "which compression codecs to use (up to 4)"
+    },
+    {
+      "opt_id": "numprocessors",
+      "desc": "limit the number of processors to use during compression"
+    }
+  ],
+  "hd": [
+    {
+      "opt_id": "force",
+      "desc": "force overwriting an existing file"
+    },
+    {
+      "opt_id": "inputstartbyte",
+      "desc": "starting byte offset within the input",
+      "widget": "line_edit"
+    },
+    {
+      "opt_id": "inputstarthunk",
+      "desc": "starting hunk offset within the input",
+      "widget": "line_edit"
+    },
+    {
+      "opt_id": "inputbytes",
+      "desc": "effective length of input in bytes",
+      "widget": "line_edit"
+    },
+    {
+      "opt_id": "inputhunks",
+      "desc": "effective length of input in hunks",
+      "widget": "line_edit"
+    },
+    {
+      "opt_id": "hunksize",
+      "desc": "size of each hunk, in bytes",
+      "widget": "line_edit"
+    },
+    {
+      "opt_id": "compression",
+      "desc": "which compression codecs to use (up to 4)",
+      "widget": "line_edit"
+    },
+    {
+      "opt_id": "template",
+      "desc": "Use hard disk template",
+      "widget": "dropdown"
+    },
+    {
+      "opt_id": "ident",
+      "desc": "Name of ident file for CHS information",
+      "widget": "line_edit"
+    },
+    {
+      "opt_id": "chs",
+      "desc": "CHS values (cylinders, heads, sectors)",
+      "widget": "line_edit"
+    },
+    {
+      "opt_id": "size",
+      "desc": "size of the output file (in bytes)",
+      "widget": "line_edit"
+    },
+    {
+      "opt_id": "sectorsize",
+      "desc": "size of each hard disk sector (in bytes)",
+      "widget": "line_edit"
+    },
+    {
+      "opt_id": "numprocessors",
+      "desc": "Max number of processors for compression",
+      "widget": "dropdown"
+    }
+  ],
+  "ld": [
+    { "opt_id": "force", "desc": "force overwriting an existing file" },
+    {
+      "opt_id": "inputstartframe",
+      "desc": "starting frame within the input"
+    },
+    {
+      "opt_id": "inputframes",
+      "desc": "effective length of input in frames"
+    },
+    { "opt_id": "hunksize", "desc": "size of each hunk, in bytes" },
+    {
+      "opt_id": "compression",
+      "desc": "which compression codecs to use (up to 4)"
+    },
+    {
+      "opt_id": "numprocessors",
+      "desc": "limit the number of processors to use during compression"
+    }
+  ],
+  "raw": [
+    {
+      "opt_id": "force",
+      "desc": "force overwriting an existing file"
+    },
+    {
+      "opt_id": "inputstartbyte",
+      "desc": "starting byte offset within the input"
+    },
+    {
+      "opt_id": "inputstarthunk",
+      "desc": "starting hunk offset within the input"
+    },
+    {
+      "opt_id": "inputbytes",
+      "desc": "effective length of input in bytes"
+    },
+    {
+      "opt_id": "inputhunks",
+      "desc": "effective length of input in hunks"
+    },
+    {
+      "opt_id": "hunksize",
+      "desc": "size of each hunk, in bytes (required)"
+    },
+    {
+      "opt_id": "unitsize",
+      "desc": "size of each unit, in bytes (required)"
+    },
+    {
+      "opt_id": "compression",
+      "desc": "which compression codecs to use (up to 4)"
+    },
+    {
+      "opt_id": "numprocessors",
+      "desc": "limit the number of processors to use during compression"
+    }
+  ]
+}
