@@ -1,4 +1,5 @@
 import glob
+import subprocess
 import sys
 from pathlib import Path
 from typing import List, Tuple
@@ -57,14 +58,16 @@ class MainWindow(QtWidgets.QWidget):
         self.output_dirpath = QtWidgets.QLineEdit()
         self.output_dirpath.setReadOnly(True)
         self.output_dirpath_button = QtWidgets.QPushButton("Select directory")
+        self.output_dirpath_button.clicked.connect(self.select_output_dir)
 
         self.output_extension_dropdown_label = QtWidgets.QLabel("Output file type:")
         self.output_extension_dropdown = QtWidgets.QComboBox()
-        self.output_extension_dropdown.addItems(["ext1", "ext2", "ext3"])
+        self.output_extension_dropdown.addItems(["chd"])
 
         self.job_opts_label = QtWidgets.QLabel("Job options")
 
-        self.run_jobs_button = QtWidgets.QPushButton("Run jobs")
+        self.run_jobs_button = QtWidgets.QPushButton("Run job")
+        self.run_jobs_button.clicked.connect(self.run_job)
 
         self.layout = QtWidgets.QVBoxLayout(self)
 
@@ -129,11 +132,17 @@ class MainWindow(QtWidgets.QWidget):
         # 10th row and beyond: job options
         self.update_job_opts_widget()
 
+    def get_current_job(self) -> str:
+        current_job = self.jobs_types[self.job_dropdown.currentIndex()]["job_id"]
+        return current_job
+
+    def get_current_media(self) -> str:
+        current_media = self.media_types[self.media_dropdown.currentIndex()]["media_id"]
+        return current_media
+
     def update_job_opts_widget(self):
-        selected_job = self.jobs_types[self.job_dropdown.currentIndex()]["job_id"]
-        selected_media = self.media_types[self.media_dropdown.currentIndex()][
-            "media_id"
-        ]
+        selected_job = self.get_current_job()
+        selected_media = self.get_current_media()
 
         job_opts_dict = load_resource("jobs_opts/" + selected_job)[selected_media]
         self.job_opts = list()
@@ -194,6 +203,36 @@ class MainWindow(QtWidgets.QWidget):
         )
         filepaths = glob.glob(selected_dir + "/**/*.cue", recursive=True)
         self.add_files_to_inputs_box(filepaths)
+
+    def select_output_dir(self):
+        selected_output_dir = QtWidgets.QFileDialog.getExistingDirectory(
+            self, "Select output directory"
+        )
+        self.output_dirpath.setText(str(Path(selected_output_dir)))
+
+    def run_job(self):
+        selected_job = self.get_current_job()
+        cmd_type = selected_job
+        if selected_job in ["create", "extract"]:
+            selected_media = self.get_current_media()
+            cmd_type += selected_media
+
+        inputs_to_process = [
+            Path(self.inputs_box.item(i).text()) for i in range(self.inputs_box.count())
+        ]
+        for input_path in inputs_to_process:
+            output_path = Path(self.output_dirpath.text()) / (input_path.stem + ".chd")
+            full_cmd = " ".join(
+                [
+                    "D:\\Projets\\_my_repos\\chdman-gui\\src\\chdman_gui\\chdman",
+                    cmd_type,
+                    "--input",
+                    f'"{input_path}"',
+                    "--output",
+                    f'"{output_path}"',
+                ]
+            )
+            subprocess.run(full_cmd)
 
 
 def main():
