@@ -1,0 +1,5 @@
+pip-tools==6.5.1
+invoke==1.6.0
+black==22.1.0
+flake8==4.0.1
+mypy==0.931
