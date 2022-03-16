@@ -6,12 +6,10 @@ from importlib import import_module
 from pathlib import Path
 from typing import List, Tuple
 
-from PySide6 import QtWidgets
+from PySide6 import QtGui, QtWidgets
 
+from chdman_gui.consts import CHDMAN_BIN_PATH, MAX_OPTS_PER_COL
 from chdman_gui.utils import load_resource
-
-MAX_OPTS_PER_COL = 9
-CHDMAN_BIN_PATH = "D:\\Projets\\_my_repos\\chdman-gui\\src\\chdman_gui\\chdman"
 
 
 def custom_horizontal_box(
@@ -218,7 +216,7 @@ class MainWindow(QtWidgets.QWidget):
                     case _:
                         raise ValueError(f"Unknown widget type : {elt['widget']}")
 
-                self.job_opts.append([(left_widget, 250), (right_widget, 120)])
+                self.job_opts.append([(left_widget, 220), (right_widget, 150)])
         except FileNotFoundError:
             pass
 
@@ -314,8 +312,14 @@ class MainWindow(QtWidgets.QWidget):
 def main():
     app = QtWidgets.QApplication([])
 
-    widget = MainWindow()
-    widget.setFixedWidth(800)
-    widget.show()
+    main_widget = MainWindow()
+
+    main_widget.setFixedWidth(800)
+
+    font = QtGui.QFont()
+    font.setPixelSize(10)
+    main_widget.setFont(font)
+
+    main_widget.show()
 
     sys.exit(app.exec())

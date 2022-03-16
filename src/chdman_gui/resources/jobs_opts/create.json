@@ -2,11 +2,11 @@
   "cd": [
     {
       "opt_id": "force",
-      "desc": "force overwriting an existing file"
+      "desc": "Force overwriting an existing file"
     },
     {
       "opt_id": "hunksize",
-      "desc": "size of each hunk, in bytes",
+      "desc": "Size of each hunk, in bytes",
       "widget": "dropdown",
       "widget_opts": {
         "values": {
@@ -17,7 +17,7 @@
     },
     {
       "opt_id": "compression",
-      "desc": "which compression codecs to use (up to 4)"
+      "desc": "Which compression codecs to use (up to 4)"
     },
     {
       "opt_id": "numprocessors",
@@ -34,36 +34,36 @@
   "hd": [
     {
       "opt_id": "force",
-      "desc": "force overwriting an existing file"
+      "desc": "Force overwriting an existing file"
     },
     {
       "opt_id": "inputstartbyte",
-      "desc": "starting byte offset within the input",
+      "desc": "Starting byte offset within the input",
       "widget": "line_edit"
     },
     {
       "opt_id": "inputstarthunk",
-      "desc": "starting hunk offset within the input",
+      "desc": "Starting hunk offset within the input",
       "widget": "line_edit"
     },
     {
       "opt_id": "inputbytes",
-      "desc": "effective length of input in bytes",
+      "desc": "Effective length of input in bytes",
       "widget": "line_edit"
     },
     {
       "opt_id": "inputhunks",
-      "desc": "effective length of input in hunks",
+      "desc": "Effective length of input in hunks",
       "widget": "line_edit"
     },
     {
       "opt_id": "hunksize",
-      "desc": "size of each hunk, in bytes",
+      "desc": "Size of each hunk, in bytes",
       "widget": "line_edit"
     },
     {
       "opt_id": "compression",
-      "desc": "which compression codecs to use (up to 4)",
+      "desc": "Which compression codecs to use (up to 4)",
       "widget": "line_edit"
     },
     {
@@ -71,7 +71,10 @@
       "desc": "Use hard disk template",
       "widget": "dropdown",
       "widget_opts": {
-        "values": ["template1", "template2"]
+        "values": {
+          "module": "chdman_gui.job_opts",
+          "func": "get_hd_templates_possible_vals"
+        }
       }
     },
     {
@@ -86,12 +89,12 @@
     },
     {
       "opt_id": "size",
-      "desc": "size of the output file (in bytes)",
+      "desc": "Size of the output file (in bytes)",
       "widget": "line_edit"
     },
     {
       "opt_id": "sectorsize",
-      "desc": "size of each hard disk sector (in bytes)",
+      "desc": "Size of each hard disk sector (in bytes)",
       "widget": "line_edit"
     },
     {
@@ -110,16 +113,16 @@
     { "opt_id": "force", "desc": "force overwriting an existing file" },
     {
       "opt_id": "inputstartframe",
-      "desc": "starting frame within the input"
+      "desc": "Starting frame within the input"
     },
     {
       "opt_id": "inputframes",
-      "desc": "effective length of input in frames"
+      "desc": "Effective length of input in frames"
     },
-    { "opt_id": "hunksize", "desc": "size of each hunk, in bytes" },
+    { "opt_id": "hunksize", "desc": "Size of each hunk, in bytes" },
     {
       "opt_id": "compression",
-      "desc": "which compression codecs to use (up to 4)"
+      "desc": "Which compression codecs to use (up to 4)"
     },
     {
       "opt_id": "numprocessors",
@@ -136,35 +139,35 @@
   "raw": [
     {
       "opt_id": "force",
-      "desc": "force overwriting an existing file"
+      "desc": "Force overwriting an existing file"
     },
     {
       "opt_id": "inputstartbyte",
-      "desc": "starting byte offset within the input"
+      "desc": "Starting byte offset within the input"
     },
     {
       "opt_id": "inputstarthunk",
-      "desc": "starting hunk offset within the input"
+      "desc": "Starting hunk offset within the input"
     },
     {
       "opt_id": "inputbytes",
-      "desc": "effective length of input in bytes"
+      "desc": "Effective length of input in bytes"
     },
     {
       "opt_id": "inputhunks",
-      "desc": "effective length of input in hunks"
+      "desc": "Effective length of input in hunks"
     },
     {
       "opt_id": "hunksize",
-      "desc": "size of each hunk, in bytes (required)"
+      "desc": "Size of each hunk, in bytes (required)"
     },
     {
       "opt_id": "unitsize",
-      "desc": "size of each unit, in bytes (required)"
+      "desc": "Size of each unit, in bytes (required)"
     },
     {
       "opt_id": "compression",
-      "desc": "which compression codecs to use (up to 4)"
+      "desc": "Which compression codecs to use (up to 4)"
     },
     {
       "opt_id": "numprocessors",
