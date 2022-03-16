@@ -15,6 +15,6 @@ def get_possible_nthreads() -> List[str]:
 def get_hd_templates_possible_vals() -> List[str]:
     data = get_hd_templates()
     return [
-        f"{line['Manufacturer']} {line['Model']} - {line['Total Size'].replace(' ', '')}"
+        f"{line['ID']}/{line['Manufacturer']} {line['Model']} - {line['Total Size'].replace(' ', '')}"
         for line in data
     ]

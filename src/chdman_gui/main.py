@@ -216,7 +216,7 @@ class MainWindow(QtWidgets.QWidget):
                     case _:
                         raise ValueError(f"Unknown widget type : {elt['widget']}")
 
-                self.job_opts.append([(left_widget, 220), (right_widget, 150)])
+                self.job_opts.append([(left_widget, 200), (right_widget, 170)])
         except FileNotFoundError:
             pass
 
@@ -277,11 +277,15 @@ class MainWindow(QtWidgets.QWidget):
         # Process job options
         cmd_opts = list()
         for row in self.job_opts_widget.children()[1:]:
-            checkbox = row.children()[1]
-            if checkbox.isChecked():
-                opt_id = checkbox.accessibleName()
-                cmd_opts.append("--" + opt_id)
-                cmd_opts.append(row.children()[2].text())
+            for i, child in enumerate(row.children()):
+                if isinstance(child, QtWidgets.QCheckBox) and child.isChecked():
+                    opt_id = child.accessibleName()
+                    cmd_opts.append("--" + opt_id)
+                    right_widget = row.children()[i + 1]
+                    if isinstance(right_widget, QtWidgets.QComboBox):
+                        cmd_opts.append(right_widget.currentText().split("/")[0])
+                    elif isinstance(right_widget, QtWidgets.QLineEdit):
+                        cmd_opts.append(right_widget.text())
 
         selected_job = self.get_current_job()
         cmd_type = selected_job
