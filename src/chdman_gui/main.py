@@ -2,12 +2,12 @@ import glob
 import os
 import subprocess
 import sys
-from importlib import import_module
 from pathlib import Path
 from typing import List, Tuple
 
 from PySide6 import QtGui, QtWidgets
 
+import chdman_gui.job_opts as job_opts_funcs
 from chdman_gui.consts import CHDMAN_BIN_PATH, MAX_OPTS_PER_COL
 from chdman_gui.extras import CheckableComboBox
 from chdman_gui.utils import load_resource
@@ -210,7 +210,7 @@ class MainWindow(QtWidgets.QWidget):
                             dropdown_vals = list(map(str, dropdown_vals_src))
                         elif isinstance(dropdown_vals_src, dict):
                             dropdown_vals = getattr(
-                                import_module(dropdown_vals_src["module"]),
+                                job_opts_funcs,
                                 dropdown_vals_src["func"],
                             )()
                         right_widget.addItems(dropdown_vals)
@@ -330,3 +330,7 @@ def main():
     main_widget.show()
 
     sys.exit(app.exec())
+
+
+if __name__ == "__main__":
+    main()

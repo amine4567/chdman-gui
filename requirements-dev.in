@@ -3,3 +3,5 @@ invoke==1.6.0
 black==22.1.0
 flake8==4.0.1
 mypy==0.941
+Nuitka==0.7.5
+zstandard==0.17.0
