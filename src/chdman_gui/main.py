@@ -9,6 +9,7 @@ from typing import List, Tuple
 from PySide6 import QtGui, QtWidgets
 
 from chdman_gui.consts import CHDMAN_BIN_PATH, MAX_OPTS_PER_COL
+from chdman_gui.extras import CheckableComboBox
 from chdman_gui.utils import load_resource
 
 
@@ -200,7 +201,10 @@ class MainWindow(QtWidgets.QWidget):
                     case "line_edit":
                         right_widget = QtWidgets.QLineEdit()
                     case "dropdown":
-                        right_widget = QtWidgets.QComboBox()
+                        if elt["widget_opts"].get("checkable", False):
+                            right_widget = CheckableComboBox()
+                        else:
+                            right_widget = QtWidgets.QComboBox()
                         dropdown_vals_src = elt["widget_opts"]["values"]
                         if isinstance(dropdown_vals_src, list):
                             dropdown_vals = list(map(str, dropdown_vals_src))
@@ -210,7 +214,6 @@ class MainWindow(QtWidgets.QWidget):
                                 dropdown_vals_src["func"],
                             )()
                         right_widget.addItems(dropdown_vals)
-
                     case None:
                         right_widget = QtWidgets.QLabel()
                     case _:

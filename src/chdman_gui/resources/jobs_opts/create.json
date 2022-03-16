@@ -17,7 +17,21 @@
     },
     {
       "opt_id": "compression",
-      "desc": "Compression codecs to use (up to 4)"
+      "desc": "Compression codecs to use (up to 4)",
+      "widget": "dropdown",
+      "widget_opts": {
+        "checkable": true,
+        "values": [
+          "cdlz",
+          "cdzl",
+          "cdfl",
+          "lzma",
+          "zlib",
+          "huff",
+          "flac",
+          "avhu"
+        ]
+      }
     },
     {
       "opt_id": "numprocessors",
