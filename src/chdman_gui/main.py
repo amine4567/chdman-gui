@@ -1,12 +1,14 @@
 import glob
+import os
 import subprocess
 import sys
+from importlib import import_module
 from pathlib import Path
 from typing import List, Tuple
 
 from PySide6 import QtWidgets
 
-from .utils import load_resource
+from chdman_gui.utils import load_resource
 
 MAX_OPTS_PER_COL = 9
 CHDMAN_BIN_PATH = "D:\\Projets\\_my_repos\\chdman-gui\\src\\chdman_gui\\chdman"
@@ -65,6 +67,7 @@ class MainWindow(QtWidgets.QWidget):
 
         self.output_label = QtWidgets.QLabel("Output Directory:")
         self.output_dirpath = QtWidgets.QLineEdit()
+        self.output_dirpath.setText(str(Path(os.path.realpath(__file__)).parent))
         self.output_dirpath.setReadOnly(True)
         self.output_dirpath_button = QtWidgets.QPushButton("Select directory")
         self.output_dirpath_button.clicked.connect(self.select_output_dir)
@@ -189,14 +192,27 @@ class MainWindow(QtWidgets.QWidget):
         self.job_opts = list()
 
         try:
-            job_opts_dict = load_resource("jobs_opts/" + selected_job)[selected_media]
-            for elt in job_opts_dict:
+            self.job_opts_data = load_resource("jobs_opts/" + selected_job)[
+                selected_media
+            ]
+            for elt in self.job_opts_data:
                 left_widget = QtWidgets.QCheckBox(elt["desc"])
+                left_widget.setAccessibleName(elt["opt_id"])
                 match elt.get("widget", None):
                     case "line_edit":
                         right_widget = QtWidgets.QLineEdit()
                     case "dropdown":
                         right_widget = QtWidgets.QComboBox()
+                        dropdown_vals_src = elt["widget_opts"]["values"]
+                        if isinstance(dropdown_vals_src, list):
+                            dropdown_vals = list(map(str, dropdown_vals_src))
+                        elif isinstance(dropdown_vals_src, dict):
+                            dropdown_vals = getattr(
+                                import_module(dropdown_vals_src["module"]),
+                                dropdown_vals_src["func"],
+                            )()
+                        right_widget.addItems(dropdown_vals)
+
                     case None:
                         right_widget = QtWidgets.QLabel()
                     case _:
@@ -260,6 +276,15 @@ class MainWindow(QtWidgets.QWidget):
         self.output_dirpath.setText(str(Path(selected_output_dir)))
 
     def run_job(self):
+        # Process job options
+        cmd_opts = list()
+        for row in self.job_opts_widget.children()[1:]:
+            checkbox = row.children()[1]
+            if checkbox.isChecked():
+                opt_id = checkbox.accessibleName()
+                cmd_opts.append("--" + opt_id)
+                cmd_opts.append(row.children()[2].text())
+
         selected_job = self.get_current_job()
         cmd_type = selected_job
         if selected_job in ["create", "extract"]:
@@ -280,7 +305,9 @@ class MainWindow(QtWidgets.QWidget):
                     "--output",
                     f'"{output_path}"',
                 ]
+                + cmd_opts
             )
+            print(full_cmd)
             subprocess.run(full_cmd)
 
 

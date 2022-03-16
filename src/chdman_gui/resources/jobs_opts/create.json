@@ -6,7 +6,14 @@
     },
     {
       "opt_id": "hunksize",
-      "desc": "size of each hunk, in bytes"
+      "desc": "size of each hunk, in bytes",
+      "widget": "dropdown",
+      "widget_opts": {
+        "values": {
+          "module": "chdman_gui.job_opts",
+          "func": "get_hunksize_possible_vals"
+        }
+      }
     },
     {
       "opt_id": "compression",
@@ -14,7 +21,14 @@
     },
     {
       "opt_id": "numprocessors",
-      "desc": "Max number of processors for compression"
+      "desc": "Max number of CPU threads to use",
+      "widget": "dropdown",
+      "widget_opts": {
+        "values": {
+          "module": "chdman_gui.job_opts",
+          "func": "get_possible_nthreads"
+        }
+      }
     }
   ],
   "hd": [
@@ -55,7 +69,10 @@
     {
       "opt_id": "template",
       "desc": "Use hard disk template",
-      "widget": "dropdown"
+      "widget": "dropdown",
+      "widget_opts": {
+        "values": ["template1", "template2"]
+      }
     },
     {
       "opt_id": "ident",
@@ -79,8 +96,14 @@
     },
     {
       "opt_id": "numprocessors",
-      "desc": "Max number of processors for compression",
-      "widget": "dropdown"
+      "desc": "Max number of CPU threads to use",
+      "widget": "dropdown",
+      "widget_opts": {
+        "values": {
+          "module": "chdman_gui.job_opts",
+          "func": "get_possible_nthreads"
+        }
+      }
     }
   ],
   "ld": [
@@ -100,7 +123,14 @@
     },
     {
       "opt_id": "numprocessors",
-      "desc": "Max number of processors for compression"
+      "desc": "Max number of CPU threads to use",
+      "widget": "dropdown",
+      "widget_opts": {
+        "values": {
+          "module": "chdman_gui.job_opts",
+          "func": "get_possible_nthreads"
+        }
+      }
     }
   ],
   "raw": [
@@ -138,7 +168,14 @@
     },
     {
       "opt_id": "numprocessors",
-      "desc": "Max number of processors for compression"
+      "desc": "Max number of CPU threads to use",
+      "widget": "dropdown",
+      "widget_opts": {
+        "values": {
+          "module": "chdman_gui.job_opts",
+          "func": "get_possible_nthreads"
+        }
+      }
     }
   ]
 }
