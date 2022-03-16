@@ -179,21 +179,25 @@ class MainWindow(QtWidgets.QWidget):
         selected_job = self.get_current_job()
         selected_media = self.get_current_media()
 
-        job_opts_dict = load_resource("jobs_opts/" + selected_job)[selected_media]
         self.job_opts = list()
-        for elt in job_opts_dict:
-            left_widget = QtWidgets.QCheckBox(elt["desc"])
-            match elt.get("widget", None):
-                case "line_edit":
-                    right_widget = QtWidgets.QLineEdit()
-                case "dropdown":
-                    right_widget = QtWidgets.QComboBox()
-                case None:
-                    right_widget = QtWidgets.QLabel()
-                case _:
-                    raise ValueError(f"Unknown widget type : {elt['widget']}")
 
-            self.job_opts.append([(left_widget, 250), (right_widget, 120)])
+        try:
+            job_opts_dict = load_resource("jobs_opts/" + selected_job)[selected_media]
+            for elt in job_opts_dict:
+                left_widget = QtWidgets.QCheckBox(elt["desc"])
+                match elt.get("widget", None):
+                    case "line_edit":
+                        right_widget = QtWidgets.QLineEdit()
+                    case "dropdown":
+                        right_widget = QtWidgets.QComboBox()
+                    case None:
+                        right_widget = QtWidgets.QLabel()
+                    case _:
+                        raise ValueError(f"Unknown widget type : {elt['widget']}")
+
+                self.job_opts.append([(left_widget, 250), (right_widget, 120)])
+        except FileNotFoundError:
+            pass
 
         # Update layout
         if hasattr(self, "job_opts_widget"):

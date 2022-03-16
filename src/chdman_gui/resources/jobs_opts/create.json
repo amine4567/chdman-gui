@@ -14,7 +14,7 @@
     },
     {
       "opt_id": "numprocessors",
-      "desc": "limit the number of processors to use during compression"
+      "desc": "Max number of processors for compression"
     }
   ],
   "hd": [
@@ -100,7 +100,7 @@
     },
     {
       "opt_id": "numprocessors",
-      "desc": "limit the number of processors to use during compression"
+      "desc": "Max number of processors for compression"
     }
   ],
   "raw": [
@@ -138,7 +138,7 @@
     },
     {
       "opt_id": "numprocessors",
-      "desc": "limit the number of processors to use during compression"
+      "desc": "Max number of processors for compression"
     }
   ]
 }
