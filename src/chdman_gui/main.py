@@ -37,18 +37,14 @@ class MainWindow(QtWidgets.QWidget):
         self.jobs_types = load_resource("jobs_types")
         self.job_dropdown.addItems([job["text"] for job in self.jobs_types])
         self.job_dropdown.currentIndexChanged.connect(self.update_job_opts_widget)
-        self.job_dropdown.currentIndexChanged.connect(
-            self.update_accepted_inputs_filetypes
-        )
+        self.job_dropdown.currentIndexChanged.connect(self.update_io_filetypes)
 
         self.media_dropdown_label = QtWidgets.QLabel("Media type:")
         self.media_dropdown = QtWidgets.QComboBox()
         self.media_types = load_resource("media_types")
         self.media_dropdown.addItems([media["text"] for media in self.media_types])
         self.media_dropdown.currentIndexChanged.connect(self.update_job_opts_widget)
-        self.media_dropdown.currentIndexChanged.connect(
-            self.update_accepted_inputs_filetypes
-        )
+        self.media_dropdown.currentIndexChanged.connect(self.update_io_filetypes)
 
         self.add_files_button = QtWidgets.QPushButton("Add files")
         self.add_files_button.clicked.connect(self.handle_add_files_button)
@@ -58,8 +54,7 @@ class MainWindow(QtWidgets.QWidget):
         self.accepted_inputs_filetypes_label = QtWidgets.QLabel(
             "Accepted inputs filetypes:"
         )
-        self.accepted_inputs_filetypes = QtWidgets.QLabel()
-        self.update_accepted_inputs_filetypes()
+        self.displayed_accepted_inputs_filetypes = QtWidgets.QLabel()
 
         self.inputs_label = QtWidgets.QLabel("Input files")
         self.inputs_box = QtWidgets.QListWidget()
@@ -76,7 +71,7 @@ class MainWindow(QtWidgets.QWidget):
 
         self.output_extension_dropdown_label = QtWidgets.QLabel("Output file type:")
         self.output_extension_dropdown = QtWidgets.QComboBox()
-        self.output_extension_dropdown.addItems(["chd"])
+        self.update_io_filetypes()
 
         self.job_opts_label = QtWidgets.QLabel("Job options")
 
@@ -107,7 +102,7 @@ class MainWindow(QtWidgets.QWidget):
                 (self.add_files_button, 80),
                 (self.add_directory_button, 100),
                 (self.accepted_inputs_filetypes_label, 135),
-                (self.accepted_inputs_filetypes, 80),
+                (self.displayed_accepted_inputs_filetypes, 80),
             ]
         )
         self.third_row_layout.setContentsMargins(0, 0, 0, 0)
@@ -159,21 +154,33 @@ class MainWindow(QtWidgets.QWidget):
         current_media = self.media_types[self.media_dropdown.currentIndex()]["media_id"]
         return current_media
 
-    def get_accepted_inputs_filetypes(self) -> List[str]:
+    def update_io_filetypes(self):
         current_job = self.get_current_job()
         if current_job == "create":
-            filetypes = self.media_types[self.media_dropdown.currentIndex()][
-                "file_types"
-            ]
+            self.accepted_inputs_filetypes = self.media_types[
+                self.media_dropdown.currentIndex()
+            ]["file_types"]
+            self.possible_output_filetypes = ["chd"]
+        elif current_job == "extract":
+            self.accepted_inputs_filetypes = ["chd"]
+            self.possible_output_filetypes = self.media_types[
+                self.media_dropdown.currentIndex()
+            ]["file_types"]
         else:
-            filetypes = ["chd"]
+            self.accepted_inputs_filetypes = ["chd"]
+            self.possible_output_filetypes = list()
 
-        return filetypes
+        self.update_displayed_accepted_inputs_filetypes()
+        self.update_possible_out_filetypes_dropdown()
 
-    def update_accepted_inputs_filetypes(self):
-        self.accepted_inputs_filetypes.setText(
-            "<b>" + ", ".join(self.get_accepted_inputs_filetypes()) + "</b>"
+    def update_displayed_accepted_inputs_filetypes(self):
+        self.displayed_accepted_inputs_filetypes.setText(
+            "<b>" + ", ".join(self.accepted_inputs_filetypes) + "</b>"
         )
+
+    def update_possible_out_filetypes_dropdown(self):
+        self.output_extension_dropdown.clear()
+        self.output_extension_dropdown.addItems(self.possible_output_filetypes)
 
     def update_job_opts_widget(self):
         selected_job = self.get_current_job()
@@ -235,7 +242,7 @@ class MainWindow(QtWidgets.QWidget):
             self,
             "Select files",
             "/",
-            ";".join([f"*.{ext}" for ext in self.get_accepted_inputs_filetypes()]),
+            ";".join([f"*.{ext}" for ext in self.accepted_inputs_filetypes]),
         )[0]
         self.add_files_to_inputs_box(filepaths)
 

@@ -1,0 +1,47 @@
+{
+  "cd": [
+    { "opt_id": "force", "desc": "force overwriting an existing file" },
+    { "opt_id": "outputbin", "desc": "output file name for binary data" },
+    { "opt_id": "inputparent", "desc": "parent file name for input CHD" }
+  ],
+  "hd": [
+    { "opt_id": "force", "desc": "force overwriting an existing file" },
+    { "opt_id": "inputparent", "desc": "parent file name for input CHD" },
+    {
+      "opt_id": "inputstartbyte",
+      "desc": "starting byte offset within the input"
+    },
+    {
+      "opt_id": "inputstarthunk",
+      "desc": "starting hunk offset within the input"
+    },
+    {
+      "opt_id": "inputbytes",
+      "desc": "effective length of input in bytes"
+    },
+    {
+      "opt_id": "inputhunks",
+      "desc": "effective length of input in hunks"
+    }
+  ],
+  "ld": [
+    { "opt_id": "force", "desc": "force overwriting an existing file" },
+    { "opt_id": "inputparent", "desc": "parent file name for input CHD" },
+    { "opt_id": "inputstartframe", "desc": "starting frame within the input" },
+    { "opt_id": "inputframes", "desc": "effective length of input in frames" }
+  ],
+  "raw": [
+    { "opt_id": "force", "desc": "force overwriting an existing file" },
+    { "opt_id": "inputparent", "desc": "parent file name for input CHD" },
+    {
+      "opt_id": "inputstartbyte",
+      "desc": "starting byte offset within the input"
+    },
+    {
+      "opt_id": "inputstarthunk",
+      "desc": "starting hunk offset within the input"
+    },
+    { "opt_id": "inputbytes", "desc": "effective length of input in bytes" },
+    { "opt_id": "inputhunks", "desc": "effective length of input in hunks" }
+  ]
+}
