@@ -62,7 +62,9 @@ class MainWindow(QtWidgets.QWidget):
         self.inputs_box.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
 
         self.select_all_button = QtWidgets.QPushButton("Select all")
+        self.select_all_button.clicked.connect(self.select_all_inputs)
         self.remove_selected_button = QtWidgets.QPushButton("Remove")
+        self.remove_selected_button.clicked.connect(self.remove_selected_paths)
 
         self.output_label = QtWidgets.QLabel("Output Directory:")
         self.output_dirpath = QtWidgets.QLineEdit()
@@ -314,6 +316,15 @@ class MainWindow(QtWidgets.QWidget):
             )
             print(full_cmd)
             subprocess.run(full_cmd)
+
+    def remove_selected_paths(self):
+        selected_ids = self.inputs_box.selectedIndexes()
+        while len(selected_ids) != 0:
+            self.inputs_box.takeItem(selected_ids[0].row())
+            selected_ids = self.inputs_box.selectedIndexes()
+
+    def select_all_inputs(self):
+        self.inputs_box.selectAll()
 
 
 def main():

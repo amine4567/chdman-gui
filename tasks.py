@@ -24,5 +24,7 @@ def run(c):
 @task
 def compile(c):
     c.run(
-        "nuitka --onefile --include-data-dir=src/chdman_gui/resources=chdman_gui/resources --plugin-enable=pyside6 src/chdman_gui/main.py"
+        "nuitka --onefile --windows-disable-console "
+        + "--include-data-dir=src/chdman_gui/resources=chdman_gui/resources "
+        + "--plugin-enable=pyside6 src/chdman_gui/main.py"
     )
