@@ -5,11 +5,12 @@ import sys
 from pathlib import Path
 from typing import List, Tuple
 
-from PySide6 import QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 import chdman_gui.job_opts as job_opts_funcs
 from chdman_gui.consts import CHDMAN_BIN_PATH, MAX_OPTS_PER_COL
 from chdman_gui.extras import CheckableComboBox
+from chdman_gui.job import Job
 from chdman_gui.utils import load_resource
 
 
@@ -279,43 +280,51 @@ class MainWindow(QtWidgets.QWidget):
         self.output_dirpath.setText(str(Path(selected_output_dir)))
 
     def run_job(self):
-        # Process job options
-        cmd_opts = list()
-        for row in self.job_opts_widget.children()[1:]:
-            for i, child in enumerate(row.children()):
-                if isinstance(child, QtWidgets.QCheckBox) and child.isChecked():
-                    opt_id = child.accessibleName()
-                    cmd_opts.append("--" + opt_id)
-                    right_widget = row.children()[i + 1]
-                    if isinstance(right_widget, QtWidgets.QComboBox):
-                        cmd_opts.append(right_widget.currentText().split("/")[0])
-                    elif isinstance(right_widget, QtWidgets.QLineEdit):
-                        cmd_opts.append(right_widget.text())
+        ## Process job options #TODO
+        # cmd_opts = list()
+        # for row in self.job_opts_widget.children()[1:]:
+        #     for i, child in enumerate(row.children()):
+        #         if isinstance(child, QtWidgets.QCheckBox) and child.isChecked():
+        #             opt_id = child.accessibleName()
+        #             cmd_opts.append("--" + opt_id)
+        #             right_widget = row.children()[i + 1]
+        #             if isinstance(right_widget, QtWidgets.QComboBox):
+        #                 cmd_opts.append(right_widget.currentText().split("/")[0])
+        #             elif isinstance(right_widget, QtWidgets.QLineEdit):
+        #                 cmd_opts.append(right_widget.text())
 
-        selected_job = self.get_current_job()
-        cmd_type = selected_job
-        if selected_job in ["create", "extract"]:
-            selected_media = self.get_current_media()
-            cmd_type += selected_media
+        # selected_job = self.get_current_job()
+        # cmd_type = selected_job
+        # if selected_job in ["create", "extract"]:
+        #     selected_media = self.get_current_media()
+        #     cmd_type += selected_media
 
-        inputs_to_process = [
-            Path(self.inputs_box.item(i).text()) for i in range(self.inputs_box.count())
-        ]
-        for input_path in inputs_to_process:
-            output_path = Path(self.output_dirpath.text()) / (input_path.stem + ".chd")
-            full_cmd = " ".join(
-                [
-                    CHDMAN_BIN_PATH,
-                    cmd_type,
-                    "--input",
-                    f'"{input_path}"',
-                    "--output",
-                    f'"{output_path}"',
-                ]
-                + cmd_opts
-            )
-            print(full_cmd)
-            subprocess.run(full_cmd)
+        ## Process inputs #TODO
+        # inputs_to_process = [
+        #     Path(self.inputs_box.item(i).text()) for i in range(self.inputs_box.count())
+        # ]
+        if self.inputs_box.count() == 0:
+            msg_box = QtWidgets.QMessageBox()
+            msg_box.setText("Nothing to do. Please add some inputs.")
+            msg_box.exec()
+        else:
+            self.display_jobs_dialog()
+
+        # for input_path in inputs_to_process:
+        #     output_path = Path(self.output_dirpath.text()) / (input_path.stem + ".chd")
+        #     full_cmd = " ".join(
+        #         [
+        #             CHDMAN_BIN_PATH,
+        #             cmd_type,
+        #             "--input",
+        #             f'"{input_path}"',
+        #             "--output",
+        #             f'"{output_path}"',
+        #         ]
+        #         + cmd_opts
+        #     )
+        #     print(full_cmd)
+        #     subprocess.run(full_cmd)
 
     def remove_selected_paths(self):
         selected_ids = self.inputs_box.selectedIndexes()
@@ -325,6 +334,37 @@ class MainWindow(QtWidgets.QWidget):
 
     def select_all_inputs(self):
         self.inputs_box.selectAll()
+
+    def display_jobs_dialog(self):
+        self.jobs_dialog = QtWidgets.QDialog()
+        self.jobs_dialog_layout = QtWidgets.QVBoxLayout(self.jobs_dialog)
+
+        job_inputs = [
+            Job(self.inputs_box.item(i).text()) for i in range(self.inputs_box.count())
+        ]
+        for job_input in job_inputs:
+            self.jobs_dialog_layout.addWidget(job_input.label)
+            self.jobs_dialog_layout.addWidget(job_input.details_arrow)
+            self.jobs_dialog_layout.addWidget(job_input.details_browser)
+            job_input.hide_details()
+
+        def hide_all_details():
+            for job_input in job_inputs:
+                job_input.hide_details()
+
+        def show_all_details():
+            for job_input in job_inputs:
+                job_input.show_details()
+
+        self.show_all_button = QtWidgets.QPushButton("Show all details")
+        self.show_all_button.clicked.connect(show_all_details)
+        self.hide_all_button = QtWidgets.QPushButton("Hide all details")
+        self.hide_all_button.clicked.connect(hide_all_details)
+
+        self.jobs_dialog_layout.addWidget(self.show_all_button)
+        self.jobs_dialog_layout.addWidget(self.hide_all_button)
+
+        self.jobs_dialog.open()
 
 
 def main():
