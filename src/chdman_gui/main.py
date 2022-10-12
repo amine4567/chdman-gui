@@ -84,6 +84,8 @@ class MainWindow(QtWidgets.QWidget):
 
         self.layout = QtWidgets.QVBoxLayout(self)
 
+        self.setWindowTitle("chdman GUI")
+
         # First row
         self.first_row_widget, self.first_row_layout = custom_horizontal_box(
             [
