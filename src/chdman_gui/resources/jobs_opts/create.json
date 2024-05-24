@@ -45,6 +45,52 @@
       }
     }
   ],
+  "dvd": [
+    {
+      "opt_id": "force",
+      "desc": "Force overwriting an existing file"
+    },
+    {
+      "opt_id": "hunksize",
+      "desc": "Size of each hunk, in bytes",
+      "widget": "dropdown",
+      "widget_opts": {
+        "values": {
+          "module": "chdman_gui.job_opts",
+          "func": "get_hunksize_possible_vals"
+        }
+      }
+    },
+    {
+      "opt_id": "compression",
+      "desc": "Compression codecs to use (up to 4)",
+      "widget": "dropdown",
+      "widget_opts": {
+        "checkable": true,
+        "values": [
+          "cdlz",
+          "cdzl",
+          "cdfl",
+          "lzma",
+          "zlib",
+          "huff",
+          "flac",
+          "avhu"
+        ]
+      }
+    },
+    {
+      "opt_id": "numprocessors",
+      "desc": "Max number of CPU threads to use",
+      "widget": "dropdown",
+      "widget_opts": {
+        "values": {
+          "module": "chdman_gui.job_opts",
+          "func": "get_possible_nthreads"
+        }
+      }
+    }
+  ],
   "hd": [
     {
       "opt_id": "force",
