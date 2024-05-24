@@ -280,29 +280,29 @@ class MainWindow(QtWidgets.QWidget):
         self.output_dirpath.setText(str(Path(selected_output_dir)))
 
     def run_job(self):
-        ## Process job options #TODO
-        # cmd_opts = list()
-        # for row in self.job_opts_widget.children()[1:]:
-        #     for i, child in enumerate(row.children()):
-        #         if isinstance(child, QtWidgets.QCheckBox) and child.isChecked():
-        #             opt_id = child.accessibleName()
-        #             cmd_opts.append("--" + opt_id)
-        #             right_widget = row.children()[i + 1]
-        #             if isinstance(right_widget, QtWidgets.QComboBox):
-        #                 cmd_opts.append(right_widget.currentText().split("/")[0])
-        #             elif isinstance(right_widget, QtWidgets.QLineEdit):
-        #                 cmd_opts.append(right_widget.text())
+        # Process job options #TODO
+        cmd_opts = list()
+        for row in self.job_opts_widget.children()[1:]:
+            for i, child in enumerate(row.children()):
+                if isinstance(child, QtWidgets.QCheckBox) and child.isChecked():
+                    opt_id = child.accessibleName()
+                    cmd_opts.append("--" + opt_id)
+                    right_widget = row.children()[i + 1]
+                    if isinstance(right_widget, QtWidgets.QComboBox):
+                        cmd_opts.append(right_widget.currentText().split("/")[0])
+                    elif isinstance(right_widget, QtWidgets.QLineEdit):
+                        cmd_opts.append(right_widget.text())
 
-        # selected_job = self.get_current_job()
-        # cmd_type = selected_job
-        # if selected_job in ["create", "extract"]:
-        #     selected_media = self.get_current_media()
-        #     cmd_type += selected_media
+        selected_job = self.get_current_job()
+        cmd_type = selected_job
+        if selected_job in ["create", "extract"]:
+            selected_media = self.get_current_media()
+            cmd_type += selected_media
 
-        ## Process inputs #TODO
-        # inputs_to_process = [
-        #     Path(self.inputs_box.item(i).text()) for i in range(self.inputs_box.count())
-        # ]
+        # Process inputs #TODO
+        inputs_to_process = [
+            Path(self.inputs_box.item(i).text()) for i in range(self.inputs_box.count())
+        ]
         if self.inputs_box.count() == 0:
             msg_box = QtWidgets.QMessageBox()
             msg_box.setText("Nothing to do. Please add some inputs.")
@@ -310,21 +310,21 @@ class MainWindow(QtWidgets.QWidget):
         else:
             self.display_jobs_dialog()
 
-        # for input_path in inputs_to_process:
-        #     output_path = Path(self.output_dirpath.text()) / (input_path.stem + ".chd")
-        #     full_cmd = " ".join(
-        #         [
-        #             CHDMAN_BIN_PATH,
-        #             cmd_type,
-        #             "--input",
-        #             f'"{input_path}"',
-        #             "--output",
-        #             f'"{output_path}"',
-        #         ]
-        #         + cmd_opts
-        #     )
-        #     print(full_cmd)
-        #     subprocess.run(full_cmd)
+        for input_path in inputs_to_process:
+            output_path = Path(self.output_dirpath.text()) / (input_path.stem + ".chd")
+            full_cmd = " ".join(
+                [
+                    CHDMAN_BIN_PATH,
+                    cmd_type,
+                    "--input",
+                    f'"{input_path}"',
+                    "--output",
+                    f'"{output_path}"',
+                ]
+                + cmd_opts
+            )
+            print(full_cmd)
+            subprocess.run(full_cmd)
 
     def remove_selected_paths(self):
         selected_ids = self.inputs_box.selectedIndexes()
