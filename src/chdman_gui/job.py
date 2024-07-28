@@ -4,6 +4,7 @@ from PySide6 import QtCore, QtWidgets
 
 from chdman_gui.consts import CHDMAN_BIN_PATH
 
+
 class Job:
     def __init__(self, input_path: str):
         self.input_path = Path(input_path)
@@ -16,7 +17,6 @@ class Job:
         self.details_arrow = QtWidgets.QToolButton()
         self.details_arrow.setArrowType(QtCore.Qt.RightArrow)
         self.details_arrow.clicked.connect(self._handle_details_arrow)
-
 
     def show_details(self):
         self.details_browser.show()
